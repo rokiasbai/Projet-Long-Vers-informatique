@@ -14,6 +14,7 @@
 void func(int connfd)
 {
 	char buff[MAX];
+	char pch[5];//exemple
 	int n;
 	// infinite loop for chat
 	for (;;) {
@@ -25,6 +26,7 @@ void func(int connfd)
 		printf("From client: %s\t To client : ", buff);
 		bzero(buff, MAX);
 		n = 0;
+		strcpy(pch,buff);
 		// copy server message in the buffer
 		while ((buff[n++] = getchar()) != '\n')
 			;
