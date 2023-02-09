@@ -26,6 +26,5 @@ TLS SEC 2023 Projet long
 
 * Etape 1 : developpement du serveur (fork + socket) : regarder sur internet
 * Etape 2 : developpement d'un programme malveillant qui scanne une plage, identifie des machines vulnerables, boucle sur la liste de ces machines et exploite la vulnerabilite -> charge malveillante afficher la date
-
-Etape 3 : modification du programme malveillant pour qu'il s'affiche a l'ecran malveillant - sans exploiter la vulnerabilite - en hexa
-Etape 4 : construction de la charge maleillante en fonction du code malveillant lui-meme (recopie)
+* Etape 3 : modification du programme malveillant pour qu'il s'affiche a l'ecran malveillant - sans exploiter la vulnerabilite - en hexa
+* Etape 4 : construction de la charge maleillante en fonction du code malveillant lui-meme (recopie)
