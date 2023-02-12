@@ -9,6 +9,7 @@
 // Code brut, à modifier
 
 // Format arguments : [-a ou -p, scan IP ou ports] [addr_IP début OU port de début] [addr_IP fin ou port de fin] [num Port si -a]
+// (fonction en -p commentée)
 // Résumé dans fct Use()
 
 int CompareIP(SOCKADDR_IN, SOCKADDR_IN);
@@ -88,7 +89,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    if (!strcmp(argv[1], "-p")){
+    /*if (!strcmp(argv[1], "-p")){
 
         SOCKADDR_IN ip;
         long Port1, Port2, Port;
@@ -125,7 +126,7 @@ int main(int argc, char *argv[])
             Port++;
         } while(Port <= Port2);
         End();
-    }
+    }*/
     else{
         Use();
     }
