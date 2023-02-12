@@ -8,6 +8,9 @@
 // Vers qui scanne les adresses IP et/ou les ports
 // Code brut, à modifier
 
+// Format arguments : [-a ou -p, scan IP ou ports] [addr_IP début OU port de début] [addr_IP fin ou port de fin] [num Port si -a]
+// Résumé dans fct Use()
+
 int CompareIP(SOCKADDR_IN, SOCKADDR_IN);
 void Use();
 void End();
