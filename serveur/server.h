@@ -8,6 +8,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <errno.h>
 #include <unistd.h> // read(), write(), close()
 #define MAX 80
 #define PORT 8080

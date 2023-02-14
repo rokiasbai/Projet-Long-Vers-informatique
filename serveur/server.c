@@ -3,7 +3,7 @@
 void overflow(char *str){
 	char buffer[5];
 	strcpy(buffer, str); // Obvious Buffer Overflow
-	printf("message %s", buffer);
+	printf("message = %s", buffer);
 }
 
 // Function designed to listen to incoming messages on port 8080.
@@ -22,10 +22,9 @@ void listen_on_port(int connfd){
 		// copy server message in the buffer
 		//while ((buff[n++] = getchar()) != '\n')
 		// and send that buffer to client
-		printf("buff content avant =%s\n", buff);
 		overflow(buff);
 		write(connfd, buff, sizeof(buff));
-		printf("buff content après= %s\n", buff);
+		//printf("Sending to client buff = %s\n", buff);
 		// if msg is "Exit" then server exit and chat ended.
 		if (strncmp("exit", buff, 4) == 0) {
 			printf("Server Exit...\n");
@@ -37,7 +36,7 @@ void listen_on_port(int connfd){
 // Driver function
 int main()
 {
-	int sockfd, connfd, len;
+	int sockfd, connfd, connfd_bis, len;
 	struct sockaddr_in servaddr, cli;
 
 	// socket create and verification
@@ -57,7 +56,7 @@ int main()
 
 	// Binding newly created socket to given IP and verification
 	if ((bind(sockfd, (SA*)&servaddr, sizeof(servaddr))) != 0) {
-		printf("socket bind failed...\n");
+		printf("socket bind failed... error : %s\n", strerror(errno));
 		exit(0);
 	}
 	else
@@ -72,23 +71,25 @@ int main()
 		printf("Server listening..\n");
 	len = sizeof(cli);
 	
-	/*while(1){
-		if(connfd = accept(sockfd,(SA*)&servaddr, ))
-	}*/
-
-	// Accept the data packet from client and verification
-	connfd = accept(sockfd, (SA*)&cli, &len);
-	if (connfd < 0) {
-		printf("server accept failed...\n");
+	// Accept the data packet from client, verification and fork
+	if(connfd_bis = accept(sockfd,(SA*)&cli,&len) < 0){
+		printf("Server accept failed\n");
 		exit(0);
 	}
-	else
-		printf("server accept the client...\n");
+	else{
+		printf("Server accepted client\n");
+	}
 
-	// Function for chatting between client and server
-	listen_on_port(connfd);
-
-	// After chatting close the socket
-	close(sockfd);
+	switch(fork()){
+		case -1:
+			printf("Server fork failed");
+			exit(-1);
+		case 0: // Proc fils
+			close(connfd);
+			listen_on_port(connfd_bis);
+			close(connfd_bis);
+		default: //Dans proc père, close sock fils par defaut
+			close(connfd_bis);
+	}
 }
 
