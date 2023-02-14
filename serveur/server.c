@@ -1,22 +1,13 @@
-#include <stdio.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h> // read(), write(), close()
-#define MAX 80
-#define PORT 8080
-#define SA struct sockaddr
+#include "server.h"
+
 void overflow(char *str){
 	char buffer[5];
-	strcpy(buffer, str);
+	strcpy(buffer, str); // Obvious Buffer Overflow
 	printf("message %s", buffer);
 }
-// Function designed for chat between client and server.
-void func(int connfd)
-{
+
+// Function designed to listen to incoming messages on port 8080.
+void listen_on_port(int connfd){
 	char buff[MAX];
 	// infinite loop for chat
 	for (;;) {
@@ -35,7 +26,7 @@ void func(int connfd)
 		overflow(buff);
 		write(connfd, buff, sizeof(buff));
 		printf("buff content après= %s\n", buff);
-		// if msg contains "Exit" then server exit and chat ended.
+		// if msg is "Exit" then server exit and chat ended.
 		if (strncmp("exit", buff, 4) == 0) {
 			printf("Server Exit...\n");
 			break;
@@ -91,7 +82,7 @@ int main()
 		printf("server accept the client...\n");
 
 	// Function for chatting between client and server
-	func(connfd);
+	listen_on_port(connfd);
 
 	// After chatting close the socket
 	close(sockfd);
