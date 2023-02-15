@@ -7,7 +7,7 @@ void overflow(char *str){
 }
 
 // Function designed to listen to incoming messages on port 8080.
-void listen_on_port(int connfd){
+void listen_on_port(int connfd){ //Traitée par le processus fils
 	char buff[MAX];
 	// infinite loop for chat
 	for (;;) {
@@ -70,26 +70,29 @@ int main()
 	else
 		printf("Server listening..\n");
 	len = sizeof(cli);
+	while(1){
+		// Accept the data packet from client, verification and fork
+		if(connfd_bis = accept(sockfd,(SA*)&cli,&len) < 0){
+			printf("Server accept failed\n");
+			exit(0);
+		}
+		else{
+			printf("Server accepted client\n");
+		}
 	
-	// Accept the data packet from client, verification and fork
-	if(connfd_bis = accept(sockfd,(SA*)&cli,&len) < 0){
-		printf("Server accept failed\n");
-		exit(0);
-	}
-	else{
-		printf("Server accepted client\n");
-	}
-
-	switch(fork()){
-		case -1:
-			printf("Server fork failed");
-			exit(-1);
-		case 0: // Proc fils
-			close(connfd);
-			listen_on_port(connfd_bis);
-			close(connfd_bis);
-		default: //Dans proc père, close sock fils par defaut
-			close(connfd_bis);
+		printf("je suis ton père et mon pid est : %d\n", getpid());
+	
+		switch(fork()){
+			case -1:
+				printf("Server fork failed");
+				exit(-1);
+			case 0: // Proc fils
+				printf("je suis ton fils et mon pid est :%d\n", getpid());
+				listen_on_port(connfd_bis);
+				sleep(30);
+			default: //Dans proc père, close sock fils par defaut
+				close(connfd_bis);
+		}
 	}
 }
 
