@@ -70,6 +70,9 @@ int main()
 	else
 		printf("Server listening..\n");
 	len = sizeof(cli);
+
+	int nb_proc = 0;
+
 	while(1){
 		// Accept the data packet from client, verification and fork
 		if(connfd_bis = accept(sockfd,(SA*)&cli,&len) < 0){
@@ -87,11 +90,17 @@ int main()
 				printf("Server fork failed");
 				exit(-1);
 			case 0: // Proc fils
+				n++;
 				printf("je suis ton fils et mon pid est :%d\n", getpid());
 				listen_on_port(connfd_bis);
-				sleep(30);
-			default: //Dans proc père, close sock fils par defaut
-				close(connfd_bis);
+				close(sockfd);
+				n--;
+				if (n==0){
+					printf("No more clients\n");
+					break;
+				}
+			default: //Dans proc père, close sock par defaut
+				close(sockfd);
 		}
 	}
 }
