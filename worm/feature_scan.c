@@ -59,6 +59,8 @@ int main(int argc, char *argv[]){
     uint32_t start_addr = ntohl(inet_addr(start_ip));
     uint32_t end_addr = ntohl(inet_addr(end_ip));
 
+    // if A FAIRE
+
     //printf("%u\n", start_addr);
     //printf("%u\n", end_addr);
 
