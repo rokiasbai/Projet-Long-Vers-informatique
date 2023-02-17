@@ -39,10 +39,10 @@ int main(int argc, char *argv[]){
         return 1;
     }
 
-    /*struct liste *Liste_Infecte;
+    struct liste *Liste_Infecte = malloc(sizeof(struct liste));
     Liste_Infecte->Debut = NULL;
     Liste_Infecte->Position = Liste_Infecte->Debut;
-    Liste_Infecte->Fin = NULL;*/
+    Liste_Infecte->Fin = NULL;
 
     /*struct IPs *Liste_Vuln;
     debut_Vuln = NULL;*/
@@ -60,6 +60,10 @@ int main(int argc, char *argv[]){
     uint32_t end_addr = ntohl(inet_addr(end_ip));
 
     // if A FAIRE
+    if (start_addr > end_addr){
+        printf("Erreur: start_ip doit être plus petit que end_ip\n");
+        return 1;
+    }
 
     //printf("%u\n", start_addr);
     //printf("%u\n", end_addr);
