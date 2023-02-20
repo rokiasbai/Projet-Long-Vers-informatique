@@ -113,7 +113,7 @@ struct list_server * scan_server_available(char * start_IP_str, char * end_IP_st
 		server_addr.sin_addr.s_addr = htonl(aux);
 		
 
-		printf("Scanning 0x%02lx . . . \n",aux);
+		//printf("Scanning 0x%02lx . . . \n",aux);
 		// Connect to the server
 		if (connect(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
 				continue;
@@ -134,7 +134,6 @@ struct list_server * scan_server_available(char * start_IP_str, char * end_IP_st
 
 
 int main(int argc, char * argv[]) {
-
 	// Check argc
 	if (argc != 3){
 		printf("Must give 2 arguments\nExample : %s <start_IP> <end_IP>\n",argv[0]);
