@@ -30,17 +30,27 @@ void func(int sockfd)
 }
 
 
+unsigned long get_sp(void) {
+__asm__("movq %rsp,%rax");
+}
+
+
+
 int main (int argc, char *argv[]){
 
+	long l=get_sp();
+
     int a = 0;
-    int b = 2;
-/*
+    int b = 2;	
+
+	printf("Ox%lu\n", l);
+
     if (argc != 1) {
         printf("Erreur: la fonction %s ne requiert aucun parametres\n", argv[0]);
         return 1;
     }
-
-
+	
+	/*
     
     // Ecriture en dur du shellcode : 
     // NOP *40(etc 1 octet chaque) + shellcode (taille à définir POUR TAILLE BOF) 
