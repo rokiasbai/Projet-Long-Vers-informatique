@@ -142,3 +142,27 @@ int main (int argc, char *argv[]){
 	printf("OK\n");
     return 0;
 }
+
+
+
+// A FAIRE
+
+// d'abord avec petite data, faire sauter une instruction
+// int a = 1
+// strcpy(...) == overflow !
+// int a = 50
+// printf("%i", a);
+
+// ne faire sauter QUE instruction pour a = 50
+// afin de print a = 1
+
+// d'ou utiliser GDB pour disass le code et retrouver les adresses des instructions
+// et ainsi mettre en adresse de retour le printf
+// (sauter juste instructions pour a = 50)
+
+// on aura ainsi la certitude de l'adresse de retour
+
+
+
+// autre inconnues : - shellcode qui s'exécute bien
+//					 - payload bien craftée
