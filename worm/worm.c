@@ -64,11 +64,10 @@ int infect(){
     char port[] = "54321";
 
     if (sockfd < 0) {
-            printf("Error in connection.\n");
-            exit(1);
-        }
+		printf("Error in connection.\n");
+		exit(1);
+	}
 
-    printf("Server Socket is created.\n");
 
     struct sockaddr_in addr;
 
@@ -94,15 +93,11 @@ int infect(){
                 perror("accept");
                 return 1;
             }
-
             // Handle incoming connection here
-            printf("Coucou c'est accepté\n");
             close(client_sock);
         }
     }
-
     return 0;
-
 }
 
 
