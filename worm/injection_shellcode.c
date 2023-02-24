@@ -4,9 +4,12 @@
 #include <arpa/inet.h> // inet_addr()
 #include <sys/socket.h>
 #include <unistd.h> 
+
 #define MAX 80
 #define PORT 8080
 #define SA struct sockaddr
+
+#include <sys/mman.h>
 
 // Voir fonction strcat pour concaténer des chars (string.h)
 
@@ -151,6 +154,18 @@ int main (int argc, char *argv[]){
 	printf("OK\n");
 
 	free(payload);
+
+
+
+	/*// TEST SHELLCODE BIEN CREE
+	char shellcode[] = "\xf3\x48\x48\x48\x74\xff\x48\xc3\xff\xf2\x0f\xf3\x68\xf2\x90\xf3\xf2\x0f\xf3\xf2\x0f\xf3\x31\x49\x5e\x48\x48\x50\x54\x45\x31\x48\xff\xf4\x66\x00\x48\x48\x48\x74\x48\x48\x74\xff\x0f\xc3\x0f\x48\x48\x48\x48\x48\x48\x48\x48\x74\x48\x48\x74\xff\x66\xc3\x0f\xf3\x80\x75\x55\x48\x00\x48\x74\x48\xe8\xe8\xc6\x5d\xc3\x0f\xc3\x0f\xf3\xe9\xf3\x55\x48\x48\x48\xe8\xb8\x5d\xc3\xf3\x48\x48\xc3";
+	void * shell = mmap(NULL, sizeof(shellcode), PROT_EXEC, MAP_ANONYMOUS, -1, 0);
+	memcpy(shell, shellcode, sizeof(shellcode));
+	int (*fct)() = (int (*)()) shell;
+	fct();*/
+
+
+
     return 0;
 }
 
@@ -176,4 +191,11 @@ int main (int argc, char *argv[]){
 
 
 // autre inconnues : - shellcode qui s'exécute bien
-//					 - payload bien craftée
+//					 - payload bien craftée OK
+
+
+
+// autres infos gdb : adresse de retour d'une fonction dans le main
+// == instruction juste après appel dans main
+
+// gcc -g + list / break (b) 7 / run / backtrace / x/10gx main (10 fois 64 bits) / info frame (info contexte, rip, rbp)
