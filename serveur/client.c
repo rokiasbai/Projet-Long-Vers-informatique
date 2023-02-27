@@ -27,15 +27,15 @@ void func(int sockfd)
 // CODER EN DUR LE SHELLCODE
 // AFFCIHER QQCHOSE COTE SERVEUR
 asm("push %rsi\n\t"
-	"lea (%rip),%rsi\n\t"
+	"lea (%rip),%rsi\n\t" 
 	"jmp 1f\n\t"
-	".byte 65\n\t"
+	".byte 65\n\t" // Chaine de caractères à write
 	".byte 69\n\t"
 	".byte 65\n\t"
 	".byte 65\n\t"
 	"1:\n\t"
 	"add $2,%rsi\n\t"
-    "xor %rax, %rax\n\t"
+    "xor %rax, %rax\n\t" // PARAMS pour syscall Write
     "mov $1, %al\n\t"
     "mov %rax, %rdi\n\t"
     "mov %rdi, %rdx\n\t"
@@ -82,7 +82,7 @@ cont:
 				printf("\n");
 			}
 		}
-		printf("%p  %p  %p\n", func, &__start_worm, &__stop_worm);
+		printf("\n%p  %p  %p\n", func, &__start_worm, &__stop_worm);
 
 		//while ((buff[n++] = getchar()) != '\n')
 		//	;
