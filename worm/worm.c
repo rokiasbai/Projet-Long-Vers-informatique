@@ -184,18 +184,13 @@ struct list_server * scan_server_available(char * start_IP_str, char * end_IP_st
 	return opened_servers;
 }
 
-
-
-int main(int argc, char * argv[]) {
-	// Check argc
-	if (argc != 3){
-		printf("Must give 2 arguments\nExample : %s <start_IP> <end_IP>\n",argv[0]);
-		exit(-1);
-	}
+int entry_point() {
 	/* Scan IP given for server listening on port 8080
     then puts them in a linked list*/
+	char *start = "10.0.0.1";
+	char *end = "10.0.0.255";
     struct list_server my_list;
-	my_list = scan_server_available(argv[1],argv[2]);
+	my_list = scan_server_available(start, end);
 
 
 	// Create and initialize socket 
@@ -227,6 +222,16 @@ int main(int argc, char * argv[]) {
 		}
 		current = current->Suivant;
 	}
+    return 0;
+}
+
+
+
+int main(int argc, char * argv[]) {
+
+	// Call entry_point function where every tasks are done
+	entry_point();
+
     return 0;
 }
 	
