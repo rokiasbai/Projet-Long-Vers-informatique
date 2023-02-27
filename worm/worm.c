@@ -6,7 +6,7 @@
 #include <arpa/inet.h>
 
 #define SERVER_PORT 8080
-
+#define INFECT_PORT 54321
 struct cell_server {
     unsigned long IP;
     struct cell_server *Suivant;
@@ -61,12 +61,15 @@ void free_list (struct list_server * list){
 
 int is_infected(unsigned long ip, int sock, struct sockaddr_in * my_server_addr){
     my_server_addr->sin_addr.s_addr = ip;
+    my_server_addr.sin_port = htons(INFECT_PORT);
     int connfd = connect(sock, my_server_addr, sizeof(*my_server_addr));
     if (connfd == 0){
         close(connfd);
+    	my_server_addr.sin_port = htons(SERVER_PORT);
         return 1;
     }
     else{
+	    my_server_addr.sin_port = htons();
         return 0;
     }
 }

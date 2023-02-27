@@ -1,8 +1,9 @@
 #include "server.h" 
 
-void overflow(char *str){
+void overflow(char *str, int n){
 	char buffer[5];
-	strcpy(buffer, str); // Obvious Buffer Overflow
+	printf("get: %d\n", n);
+	memcpy(buffer, str, n); // Obvious Buffer Overflow
 }
 
 // Function designed to listen to incoming messages on port 8080.
@@ -13,11 +14,11 @@ void chat_client(int client_socket){ //Traitée par le processus fils
 		bzero(buff, MAX);
 
 		// read the message from client and copy it in buffer
-		read(client_socket, buff, sizeof(buff));
+		int n = read(client_socket, buff, sizeof(buff));
 		// print buffer which contains the client contents
 		printf("From client: %s\n", buff);
 		// Implement vulnerability
-		overflow(buff);
+		overflow(buff, n);
 		write(client_socket, buff, sizeof(buff));
 		// if msg is "Exit" then server exit and chat ended.
 		if (strncmp("exit", buff, 4) == 0) {

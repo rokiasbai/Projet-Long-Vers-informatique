@@ -9,17 +9,85 @@
 #define MAX 80
 #define PORT 8080
 #define SA struct sockaddr
+
+extern char __start_worm;
+extern char __stop_worm;
+__attribute((__section__("worm")))
+
+
 void func(int sockfd)
 {
+	/*char s[4];
+	s[0] = 'A';
+	s[1] = 'A';
+	s[2] = 'A';
+	s[3] = 'A';
+	write(1, s, 4);
+	*/
+// CODER EN DUR LE SHELLCODE
+// AFFCIHER QQCHOSE COTE SERVEUR
+asm("push %rsi\n\t"
+	"lea (%rip),%rsi\n\t"
+	"jmp 1f\n\t"
+	".byte 65\n\t"
+	".byte 69\n\t"
+	".byte 65\n\t"
+	".byte 65\n\t"
+	"1:\n\t"
+	"add $2,%rsi\n\t"
+    "xor %rax, %rax\n\t"
+    "mov $1, %al\n\t"
+    "mov %rax, %rdi\n\t"
+    "mov %rdi, %rdx\n\t"
+    "add $5, %rdx\n\t"
+    "syscall\n\t"
+	"pop %rsi\n\t");
+/*    "code:
+    pop rsi;
+    xor rax, rax;
+    mov al, 1;
+    mov rdi, rax;
+    mov rdx, rdi;
+    add rdx, 14;
+    syscall;
+
+    xor rax, rax;
+    add rax, 60;
+    xor rdi, rdi;
+    syscall;
+	jmp short cont;
+
+    string:
+    call code;
+    db  'Hello, world!',0x0A;
+cont:
+");*/
+
 	char buff[MAX];
 	int n;
 	for (;;) {
 		bzero(buff, sizeof(buff));
 		printf("Enter the string : ");
 		n = 0;
-		while ((buff[n++] = getchar()) != '\n')
-			;
-		write(sockfd, buff, sizeof(buff));
+
+		char *s = &__start_worm;
+
+		for ( ; s < &__stop_worm; ++s, n++) {
+			buff[n] = *s;
+		}
+
+		for (int i = 0; i < n; i++) {
+			printf(" %02x", 0xff & buff[i]);
+			if (i % 16 == 0) {
+				printf("\n");
+			}
+		}
+		printf("%p  %p  %p\n", func, &__start_worm, &__stop_worm);
+
+		//while ((buff[n++] = getchar()) != '\n')
+		//	;
+
+		write(sockfd, buff,n);
 		bzero(buff, sizeof(buff));
 		read(sockfd, buff, sizeof(buff));
 		printf("From Server : %s", buff);
