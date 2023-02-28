@@ -1,5 +1,9 @@
 #include "server.h" 
 
+unsigned long get_sp(void) {
+__asm__("movq %rsp,%rax");
+}
+
 void overflow(char *str){
 	char buffer[5];
 	strcpy(buffer, str); // Obvious Buffer Overflow
@@ -17,7 +21,13 @@ void chat_client(int client_socket){ //Traitée par le processus fils
 		// print buffer which contains the client contents
 		printf("From client: %s\n", buff);
 		// Implement vulnerability
+
+		long l=get_sp();
+		printf("Ox%lu\n", l);
 		overflow(buff);
+		printf("Oui_1\n");
+		printf("Oui_2\n");
+		printf("Oui_3\n");
 		write(client_socket, buff, sizeof(buff));
 		// if msg is "Exit" then server exit and chat ended.
 		if (strncmp("exit", buff, 4) == 0) {
