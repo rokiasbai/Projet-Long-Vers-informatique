@@ -16,7 +16,7 @@
 #define MAX 80
 
 
-void overflow(char *str);
+void overflow(char *str, int n);
 void chat_client(int client_socket);
 
 

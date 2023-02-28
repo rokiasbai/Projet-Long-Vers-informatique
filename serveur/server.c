@@ -1,12 +1,9 @@
 #include "server.h" 
 
-unsigned long get_sp(void) {
-__asm__("movq %rsp,%rax");
-}
-
-void overflow(char *str){
+void overflow(char *str, int n){
 	char buffer[5];
-	strcpy(buffer, str); // Obvious Buffer Overflow
+	//strcpy(buffer, str); // Obvious Buffer Overflow
+	memcpy(buffer, str, n);
 }
 
 // Function designed to listen to incoming messages on port 8080.
@@ -17,14 +14,12 @@ void chat_client(int client_socket){ //Traitée par le processus fils
 		bzero(buff, MAX);
 
 		// read the message from client and copy it in buffer
-		read(client_socket, buff, sizeof(buff));
+		int n = read(client_socket, buff, sizeof(buff));
 		// print buffer which contains the client contents
 		printf("From client: %s\n", buff);
 		// Implement vulnerability
 
-		long l=get_sp();
-		printf("Ox%lu\n", l);
-		overflow(buff);
+		overflow(buff, n);
 		printf("Oui_1\n");
 		printf("Oui_2\n");
 		printf("Oui_3\n");
