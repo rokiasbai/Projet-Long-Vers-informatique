@@ -2,6 +2,7 @@
 
 void overflow(char *str, int n){
 	char buffer[100];
+	printf("get %d\n", n);
 	//strcpy(buffer, str); // Obvious Buffer Overflow
 	memcpy(buffer, str, n);
 }
