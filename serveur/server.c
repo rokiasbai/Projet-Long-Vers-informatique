@@ -1,7 +1,7 @@
 #include "server.h" 
 
 void overflow(char *str, int n){
-	char buffer[5];
+	char buffer[50];
 	printf("get: %d\n", n);
 	memcpy(buffer, str, n); // Obvious Buffer Overflow
 }

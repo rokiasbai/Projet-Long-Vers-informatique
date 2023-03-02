@@ -1,0 +1,10 @@
+
+build : client.c server.c
+	gcc -Wall client.c -o client.out
+	gcc -Wall server.C -o server.out 
+
+
+clean:
+clean :
+	rm -f *.out
+
