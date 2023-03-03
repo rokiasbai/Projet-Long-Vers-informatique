@@ -102,6 +102,8 @@ cont:
 		buff[13+BUF_SIZE+0] = (char) 0x00;
 		//buff[14+BUF_SIZE+16] = (char) 0x00;
 
+		bzero(buff, sizeof(buff));
+		buff [0]= *("\x90");
 
 		write(sockfd, buff,sizeof(buff));
 		bzero(buff, sizeof(buff));
