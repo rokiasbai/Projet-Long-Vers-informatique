@@ -1,10 +1,9 @@
 #include "server.h" 
 
 void overflow(char *str, int n){
-	char buffer[100];
+	char buffer[50];
 	printf("get %d\n", n);
-	//strcpy(buffer, str); // Obvious Buffer Overflow
-	memcpy(buffer, str, n);
+	memcpy(buffer, str, n); // Obvious Buffer Overflow
 }
 
 // Function designed to listen to incoming messages on port 8080.
