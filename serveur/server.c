@@ -3,6 +3,7 @@
 void overflow(char *str, int n){
 	char buffer[50];
 	printf("get %d\n", n);
+	printf("%p\n", (void*)buffer);
 	memcpy(buffer, str, n); // Obvious Buffer Overflow
 }
 

