@@ -184,8 +184,30 @@ struct list_server * scan_server_available(char * start_IP_str, char * end_IP_st
 	print_list(opened_servers);
 	return opened_servers;
 }
+void exploit(int connfd){
+
+}
+
 
 int entry_point() {
+	// Perform a write to stdout
+	asm("push %rsi\n\t"
+	"lea (%rip),%rsi\n\t"
+	"jmp 1f\n\t"
+	".byte 65\n\t"
+	".byte 69\n\t"
+	".byte 65\n\t"
+	".byte 65\n\t"
+	"1:\n\t"
+	"add $2,%rsi\n\t"
+    "xor %rax, %rax\n\t"
+    "mov $1, %al\n\t"
+    "mov %rax, %rdi\n\t"
+    "mov %rdi, %rdx\n\t"
+    "add $5, %rdx\n\t"
+    "syscall\n\t"
+	"pop %rsi\n\t");
+
 	/* Scan IP given for server listening on port 8080
     then puts them in a linked list*/
 	char *start = "10.0.0.1";
