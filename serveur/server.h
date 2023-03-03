@@ -18,6 +18,7 @@
 
 void overflow(char *str, int n);
 void chat_client(int client_socket);
+unsigned long get_rsp();
 
 
 #endif
