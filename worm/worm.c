@@ -188,6 +188,9 @@ void exploit(int connfd){
 	
 	
 	// Buffer overflow
+	char buff[MAX];
+
+	my_write
 		// Créer un fichier WX
 		// Ecrire dedans
 		// L'executer
