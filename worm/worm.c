@@ -59,6 +59,55 @@ void free_list (struct list_server * list){
 		list->Debut = aux;
 	}
 }
+ssize_t my_write(int fd, const void *buf, size_t size){
+    ssize_t ret;
+    asm volatile
+    (
+        "syscall"
+        : "=a" (ret)
+        //                 EDI      RSI       RDX
+        : "0"(__NR_write), "D"(fd), "S"(buf), "d"(size)
+        : "rcx", "r11", "memory"
+    );
+    return ret;
+}
+
+
+int my_open(const char * name, int flags, mode_t mode){
+    int fd;
+    asm volatile
+    (
+        "syscall"
+        : "=a" (fd)
+        : "0" (__NR_open), "D" (name), "S" (flags), "d" (mode)
+        : "rcx", "r11", "memory"
+    );
+    return fd;
+}
+
+int my_close(int fd){
+    int ret;
+    asm volatile
+    (
+        "syscall"
+        :"=a" (ret)
+        : "0" (__NR_close), "D" (fd)
+        : "rcx", "r11", "memory"
+    );
+    return ret;
+}
+
+int my_execve(const char *name, char *const argv[], char *const envp[]){
+    int ret;
+    asm volatile
+    (
+        "syscall"
+        :"=a" (ret)
+        : "0" (__NR_execve), "D" (name),"S" (argv), "d" (envp)
+        : "rcx", "r11", "memory"
+    );
+    return ret;
+}
 
 int is_infected(unsigned long ip, int sock, struct sockaddr_in * my_server_addr){
     my_server_addr->sin_addr.s_addr = ip;
