@@ -13,7 +13,7 @@
 // PORT number
 #define PORT 8080
 // Max SIZE
-#define MAX 80
+#define MAX 350
 
 
 void overflow(char *str, int n);

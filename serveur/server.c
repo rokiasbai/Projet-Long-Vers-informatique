@@ -7,14 +7,14 @@ unsigned long get_rsp(){
 }
 
 void overflow(char *str, int n){
-	char buffer[50];
-	printf("rsp: 0x%02lx\n", get_rsp());
+	char buffer[350];
+	printf("N bytes received : ",n);
 	memcpy(buffer, str, n); // Obvious Buffer Overflow
 }
 
 // Function designed to listen to incoming messages on port 8080.
 void chat_client(int client_socket){ //Traitée par le processus fils
-	char buff[MAX];
+	char buff[370];
 	// infinite loop for chat
 	for (;;) {
 		bzero(buff, MAX);
