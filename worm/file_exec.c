@@ -23,7 +23,7 @@ int main(void){
     my_close(fd);
     char buff[100];
     my_execve("/tmp/maybe_a_virus",0,0);
-    char * s = &my_write;
+    /*char * s = &my_write;
     for (int i =0;s<&my_open;s++,i++){
         buff[i]=*s;
         printf(" %02x",0xff& buff[i]);
@@ -31,7 +31,7 @@ int main(void){
             printf("\n");
         }
     }
-    printf("\n");    
+    printf("\n");*/    
     return 0;
 }
 

